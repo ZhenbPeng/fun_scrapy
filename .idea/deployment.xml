@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="On explicit save action" serverName="fun_scrapy" stopOnFirstError="true" deleteMissingItems="true" createEmptyFolders="true" filePermissions="420" folderPermissions="493" autoUploadExternalChanges="true">
+  <component name="PublishConfigData" autoUpload="On explicit save action" serverName="fun_scrapy" stopOnFirstError="true" deleteMissingItems="true" createEmptyFolders="true" promptOnLocalOverwrite="false" filePermissions="420" folderPermissions="493" autoUploadExternalChanges="true">
     <serverData>
       <paths name="fun_scrapy">
         <serverdata>
