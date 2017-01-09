@@ -30,7 +30,6 @@ class MeiTuSpider(scrapy.spiders.Spider):
         next_page = select.xpath("//center/div[@class='text-c']/a[@class='a1'][2]/@href").extract()
         request = scrapy.Request(''.join([self.homepage, next_page[0]]), callback=self.parse)
         if request.url != response.url:
-            time.sleep(1)
             yield request
 
     def parse_page(self, response):
@@ -38,14 +37,12 @@ class MeiTuSpider(scrapy.spiders.Spider):
         select = Selector(response)
         # 抓取当前套图页面
         request = scrapy.Request(response.url, callback=self.parse_image, dont_filter=True)
-        time.sleep(1)
         yield request
-        # self.parse_image(response)
+
 
         next_page = select.xpath("//center/div[@id='pages']/a[@class='a1'][2]/@href").extract()
         request = scrapy.Request(next_page[0], callback=self.parse_page)
         if request.url != response.url:
-            time.sleep(1)
             yield request
 
     def parse_image(self, response):
