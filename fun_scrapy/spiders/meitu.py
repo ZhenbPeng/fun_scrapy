@@ -15,31 +15,32 @@ class MeiTuSpider(scrapy.spiders.Spider):
     def __init__(self, sort="guochan", *args, **kwargs):
         super(MeiTuSpider, self).__init__(*args, **kwargs)
         self.start_urls = ["http://www.meitulu.com/%s" % sort]
+        log.msg("开始抓取 ..." , level=log.INFO)
 
     def parse(self, response):
+        log.msg("正在解析列表页面: %s ..." % response.url, level=log.INFO)
         select = Selector(response)
 
         # 解析要抓取的套图页面
-        # for group in select.xpath("//ul[@class='img']/li/a/@href").extract():
-        group = "http://www.meitulu.com/item/9179.html"
-        request = scrapy.Request(group, callback=self.parse_page)
-        yield request
+        for group in select.xpath("//ul[@class='img']/li/a/@href").extract():
+            request = scrapy.Request(group, callback=self.parse_page)
+            yield request
 
-        # # 获取列表的下一页
-        # next_page = select.xpath("//center/div[@class='text-c']/a[@class='a1'][2]/@href").extract()
-        # request = scrapy.Request(''.join([self.homepage, next_page]), callback=self.parse)
-        # if request.url != response.url:
-        #     time.sleep(1)
-        #     yield request
+        # 获取列表的下一页
+        next_page = select.xpath("//center/div[@class='text-c']/a[@class='a1'][2]/@href").extract()
+        request = scrapy.Request(''.join([self.homepage, next_page[0]]), callback=self.parse)
+        if request.url != response.url:
+            time.sleep(1)
+            yield request
 
     def parse_page(self, response):
+        log.msg("正在解析套图页面: %s ..." % response.url, level=log.INFO)
         select = Selector(response)
-
-        # # 抓取当前套图页面
-        # request = scrapy.Request(response.url, callback=self.parse_image, dont_filter=True)
-        # time.sleep(1)
-        # yield request
-        self.parse_image(response)
+        # 抓取当前套图页面
+        request = scrapy.Request(response.url, callback=self.parse_image, dont_filter=True)
+        time.sleep(1)
+        yield request
+        # self.parse_image(response)
 
         next_page = select.xpath("//center/div[@id='pages']/a[@class='a1'][2]/@href").extract()
         request = scrapy.Request(next_page[0], callback=self.parse_page)
@@ -48,6 +49,7 @@ class MeiTuSpider(scrapy.spiders.Spider):
             yield request
 
     def parse_image(self, response):
+        log.msg("正在收集页面数据: %s ..." % response.url, level=log.INFO)
         loader = ItemLoader(item=MeiTuItem(), response=response)
 
         loader.add_xpath('publisher', "//div[@class='width']/div[@class='c_l']/p[1]/text()")
@@ -69,5 +71,5 @@ class MeiTuSpider(scrapy.spiders.Spider):
         loader.add_xpath('image_url', "//div[@class='content']/center/img[@class='content_img']/@src")
         loader.add_value("page_url", response.url)
 
-        log.msg("loader ok", level=log.DEBUG)
-        return loader.load_item()
+
+        yield loader.load_item()

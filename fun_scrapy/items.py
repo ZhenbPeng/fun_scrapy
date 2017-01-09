@@ -26,5 +26,6 @@ class MeiTuItem(scrapy.Item):
     sort = scrapy.Field()           # 分类
     page_url = scrapy.Field()       # 被抓取页面URL
     image_url = scrapy.Field()      # 图片URL
+    file_path = scrapy.Field()      # 图片存储地址
 
 
