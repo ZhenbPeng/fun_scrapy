@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import time
-from scrapy import log
+import logging
 from scrapy.selector import Selector
-from scrapy.contrib.loader import ItemLoader, Identity
+from scrapy.loader import ItemLoader
 from ..items import MeiTuItem
+
+logger = logging.getLogger("MeiTu")
 
 class MeiTuSpider(scrapy.spiders.Spider):
     name = 'MeiTu'
@@ -15,10 +16,10 @@ class MeiTuSpider(scrapy.spiders.Spider):
     def __init__(self, sort="guochan", *args, **kwargs):
         super(MeiTuSpider, self).__init__(*args, **kwargs)
         self.start_urls = ["http://www.meitulu.com/%s" % sort]
-        log.msg("开始抓取 ..." , level=log.INFO)
+        logger.info("开始抓取: %s..." % self.start_urls[0])
 
     def parse(self, response):
-        log.msg("正在解析列表页面: %s ..." % response.url, level=log.INFO)
+        logger.info("正在解析列表页面: %s ..." % response.url)
         select = Selector(response)
 
         # 解析要抓取的套图页面
@@ -33,7 +34,7 @@ class MeiTuSpider(scrapy.spiders.Spider):
             yield request
 
     def parse_page(self, response):
-        log.msg("正在解析套图页面: %s ..." % response.url, level=log.INFO)
+        logger.info("正在解析套图页面: %s ..." % response.url)
         select = Selector(response)
         # 抓取当前套图页面
         request = scrapy.Request(response.url, callback=self.parse_image, dont_filter=True)
@@ -46,7 +47,7 @@ class MeiTuSpider(scrapy.spiders.Spider):
             yield request
 
     def parse_image(self, response):
-        log.msg("正在收集页面数据: %s ..." % response.url, level=log.INFO)
+        logger.info("正在收集页面数据: %s ..." % response.url)
         loader = ItemLoader(item=MeiTuItem(), response=response)
 
         loader.add_xpath('publisher', "//div[@class='width']/div[@class='c_l']/p[1]/text()")

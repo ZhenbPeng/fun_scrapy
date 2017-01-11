@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 # Scrapy settings for fun_scrapy project
 #
 # For simplicity, this file contains only settings considered important or
@@ -20,7 +19,7 @@ MEITU_STORE_PATH = '.'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'ERROR'  # 控制台日志输出级别
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -59,10 +58,9 @@ LOG_LEVEL = 'INFO'
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
-
+EXTENSIONS = {
+   'scrapy.extensions.telnet.TelnetConsole': 500,
+}
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {

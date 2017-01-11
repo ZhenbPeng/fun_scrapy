@@ -13,7 +13,9 @@
 import os
 import settings
 import requests
-from scrapy import log
+import logging
+
+logger = logging.getLogger("MeiTu")
 
 
 class MeiTuPipeline(object):
@@ -42,7 +44,7 @@ class MeiTuPipeline(object):
                     continue
 
                 with open(file_path, 'wb') as handle:
-                    log.msg("正在下载图片: %s ..." % image_url.encode('utf-8'), level=log.INFO)
+                    logger.info("正在下载图片: %s ..." % image_url.encode('utf-8'))
                     response = requests.get(image_url, stream=True)
                     for block in response.iter_content(1024):
                         if not block:
